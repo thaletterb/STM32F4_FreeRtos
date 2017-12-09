@@ -20,26 +20,26 @@
 #include "stm32f4xx_hal_gpio.h"
 #include "stm32f4xx_hal_rcc.h"
 
+// Drivers
+#include "I2C_Driver.h"
+#include "GPIO_Driver.h"
+
 // Private Function Declarations
 static void STM32_initAllPeripherals(void);
-static void STM32_initGPIOPeripheral(void);
 
 // Tasks/Threads
 static void GreenLedThread(void *arg);
 static void OrangeLedThread(void *arg);
 
-
 int main(void)
 {
 	// set up interrupt priorities for FreeRTOS !!
-	//NVIC_PriorityGroupConfig( NVIC_PRIORITYGROUP_4 );
 	HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
 
 	STM32_initAllPeripherals();
 
 	xTaskCreate(GreenLedThread, "Green LED Thread", 128, NULL, tskIDLE_PRIORITY + 1, NULL);
 	xTaskCreate(OrangeLedThread, "Orange LED Thread", 128, NULL, tskIDLE_PRIORITY + 1, NULL);
-
 
 	// Start the scheduler
 	vTaskStartScheduler();
@@ -52,23 +52,8 @@ static void STM32_initAllPeripherals(void)
 {
 	HAL_Init();
 
-	STM32_initGPIOPeripheral();
-}
-
-static void STM32_initGPIOPeripheral(void)
-{
-	// Enable clock to GPIOD peripheral
-	__HAL_RCC_GPIOD_CLK_ENABLE();
-
-	// GPIOD Configuration
-	GPIO_InitTypeDef GPIO_InitStruct;
-	GPIO_InitStruct.Pin 	= GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
-	GPIO_InitStruct.Mode 	= GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Speed 	= GPIO_SPEED_MEDIUM; //GPIO_Speed_50MHz;
-	GPIO_InitStruct.Pull 	= GPIO_PULLUP; //GPIO_PuPd_UP;
-//
-	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
+	GPIO_initPeripheral();
+	I2C_initPeripheral();
 }
 
 static void GreenLedThread(void *arg)
