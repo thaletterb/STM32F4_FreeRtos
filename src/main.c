@@ -27,6 +27,9 @@
 // Hardware
 #include "SSD1306.h"
 
+// Libraries
+#include "u8g_arm.h"
+
 // Private Function Declarations
 static void STM32_initAllPeripherals(void);
 
@@ -133,9 +136,6 @@ static void OrangeLedThread(void *arg);
 
 int main(void)
 {
-	//// set up interrupt priorities for FreeRTOS !!
-	//HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
-
 	STM32_initAllPeripherals();
 
 	//xTaskCreate(GreenLedThread, "Green LED Thread", 128, NULL, tskIDLE_PRIORITY + 1, NULL);
@@ -146,6 +146,7 @@ int main(void)
 
 	return 0;
 }
+static u8g_t u8g;
 
 // Private Function Definitions
 static void STM32_initAllPeripherals(void)
@@ -166,15 +167,28 @@ static void GreenLedThread(void *arg)
 	}
 }
 
+
+static void draw(void)
+{
+    u8g_SetFont(&u8g, u8g_font_profont10);
+    u8g_DrawStr(&u8g, 2, 16, "Hello!");
+    u8g_DrawBox(&u8g, 30, 30, 35, 35);  // draw a box
+}
+
 static void OrangeLedThread(void *arg)
 {
 	I2C_HandleTypeDef *i2cHandle = I2C_returnHandlePtr();
-	SSD1306_init(i2cHandle, SSD1306_7BIT_ADDR);
+	u8g_InitComFn(&u8g, &u8g_dev_ssd1306_128x64_i2c, u8g_com_hw_i2c_fn);
 
 	while(1)
 	{
 		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
-		vTaskDelay(pdMS_TO_TICKS(1000));
-		SSD1306_writeDataBuffer(i2cHandle, SSD1306_7BIT_ADDR, global_display_buffer, 1024);
+		vTaskDelay(pdMS_TO_TICKS(100));
+		u8g_FirstPage(&u8g);
+		do
+		{
+		    draw();
+		} while(u8g_NextPage(&u8g));
+		vTaskDelay(pdMS_TO_TICKS(1));
 	}
 }
