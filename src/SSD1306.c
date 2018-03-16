@@ -20,7 +20,7 @@ static void ssd1306_sendCommand(I2C_HandleTypeDef *hi2c, uint8_t ssd1306_7bit_ad
 {
 	const uint8_t commandByte 	= 0x00;
 	uint8_t buffer[2] 			= { commandByte, command };
-	I2C_transmit(hi2c, ((ssd1306_7bit_address) << 1), buffer, 2, 1000);
+	I2C_transmit_blocking(hi2c, ((ssd1306_7bit_address) << 1), buffer, 2, 1000);
 }
 
 /*
@@ -37,7 +37,7 @@ static void ssd1306_sendData(I2C_HandleTypeDef *hi2c, uint8_t ssd1306_7bit_addre
 	{
 		uint8_t buffer[2] = { dataByte, data[index] };
 
-		I2C_transmit(hi2c, (ssd1306_7bit_address << 1), buffer, 2, 1000);
+		I2C_transmit_blocking(hi2c, (ssd1306_7bit_address << 1), buffer, 2, 1000);
 	}
 }
 
