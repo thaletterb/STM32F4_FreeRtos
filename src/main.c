@@ -154,7 +154,7 @@ static void STM32_initAllPeripherals(void)
 	HAL_Init();
 
 	GPIO_initPeripheral();
-	errCode |= I2C_initPeripheral();
+	errCode |= I2C_initPeripheral_defaults();
 }
 
 static void GreenLedThread(void *arg)

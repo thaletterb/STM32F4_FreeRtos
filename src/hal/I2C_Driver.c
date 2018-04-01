@@ -13,9 +13,9 @@
 // Local Variables
 static I2C_HandleTypeDef I2C_handle;
 
-///////////////////
-// Public Functions
-///////////////////
+/*
+ * Public Functions
+ */
 
 /*
  * I2C_returnHandlePtr()
@@ -30,7 +30,7 @@ I2C_HandleTypeDef *I2C_returnHandlePtr(void)
 }
 
 /*
- * I2C_initPeripheral()
+ * I2C_initPeripheral_defaults()
  *
  * Initializes I2C1 peripheral
  * PB8: SCL
@@ -39,9 +39,8 @@ I2C_HandleTypeDef *I2C_returnHandlePtr(void)
  * Need to also initialize clocks to GPIOB
  * and remap AF
  */
-uint8_t I2C_initPeripheral(void)
+uint8_t I2C_initPeripheral_defaults(void)
 {
-
 	// Enable I2C Peripheral clock
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 	__HAL_RCC_I2C1_CLK_ENABLE();
@@ -60,8 +59,6 @@ uint8_t I2C_initPeripheral(void)
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 	// I2C Init
-	//I2C_InitTypeDef I2C_InitStruct;
-
 	I2C_handle.Init.AddressingMode 	= I2C_ADDRESSINGMODE_7BIT;
 	I2C_handle.Init.OwnAddress1		= 0x00;		// Not relevant in master (?)
 	I2C_handle.Init.DutyCycle		= I2C_DUTYCYCLE_16_9;
@@ -74,8 +71,18 @@ uint8_t I2C_initPeripheral(void)
 	return (HAL_I2C_Init(&I2C_handle) == HAL_OK);
 }
 
-
-uint8_t I2C_transmit(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t Timeout)
+/*
+ * I2C Transmit - Blocking
+ */
+uint8_t I2C_transmit_blocking(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t Timeout)
 {
 	return (HAL_I2C_Master_Transmit(hi2c, DevAddress, pData, Size, Timeout) == HAL_OK);
+}
+
+/*
+ * I2C Receive - Blocking
+ */
+uint8_t I2C_receive_blocking(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t Timeout)
+{
+    return (HAL_I2C_Master_Receive(hi2c, DevAddress, pData, Size, Timeout) == HAL_OK);
 }
