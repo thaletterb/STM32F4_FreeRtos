@@ -14,12 +14,18 @@
 #include "stm32f4_discovery.h"
 
 /*
- * Typedefs
+ * Macros
  */
 
 /*
- * Macros
+ * Typedefs
  */
+typedef struct I2C_device_t
+{
+    I2C_HandleTypeDef   *hi2c;
+    uint16_t            deviceAddress;    // 7 bit slave
+} I2C_device_t;
+
 
 /*
  * Public Functions
