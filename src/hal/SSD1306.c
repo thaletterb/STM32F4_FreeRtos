@@ -94,16 +94,7 @@ static uint8_t SSD1306_displayBuffer[SSD1306_DISPLAY_BUFFER_SIZE_BYTES] = {
  * Private Functions
  */
 
-// Brief: Draws a pixel to the buffer at coordinate (x,y)
-static void ssd1306_drawPixel(uint8_t *buffer, uint8_t x, uint8_t y)
-{
-	uint8_t local_x, local_y;
 
-	local_x = SSD1306_WIDTH_PX - x - 1;
-	local_y = SSD1306_HEIGHT_PX - y -1;
-
-	buffer[local_x+ (local_y/8)*SSD1306_WIDTH_PX] |=  (1 << (local_y&7));
-}
 
 /*
  * Brief: Draws a bitmap to the buffer starting at (x,y)
@@ -127,7 +118,7 @@ uint8_t *SSD1306_getDisplayBufferHandle(void)
 }
 
 // Brief: Sends the contents of the display buffer to the display
-void SSD1306_writeDataBuffer(uint8_t *data, uint16_t dataLength)
+void SSD1306_drawDataBuffer(uint8_t *data, uint16_t dataLength)
 {
 	SSD1306_sendCommand(SSD1306_CMD_SET_COLUMN_ADDRESS);
 	SSD1306_sendCommand(SSD1306_CMD_SET_COLUMN_START_ADDRESS);
@@ -192,4 +183,16 @@ void SSD1306_init(void)
     SSD1306_sendCommand(SSD1306_CMD_TURN_ON_REGULAR_MODE);
 
     SSD1306_displayOn();
+}
+
+// Brief: Draws a pixel to the buffer at coordinate (x,y)
+void SSD1306_drawPixel(uint8_t xCoord, uint8_t yCoord)
+{
+    uint8_t *buffer = SSD1306_getDisplayBufferHandle();
+    uint8_t local_x, local_y;
+
+    local_x = SSD1306_WIDTH_PX - xCoord - 1;
+    local_y = SSD1306_HEIGHT_PX - yCoord -1;
+
+    buffer[local_x+ (local_y/8)*SSD1306_WIDTH_PX] |=  (1 << (local_y&7));
 }

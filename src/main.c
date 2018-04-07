@@ -97,6 +97,6 @@ static void OrangeLedThread(void *arg)
 	{
 		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
 		vTaskDelay(pdMS_TO_TICKS(1000));
-		SSD1306_writeDataBuffer(SSD1306_getDisplayBufferHandle(), 1024);
+		SSD1306_drawDataBuffer(SSD1306_getDisplayBufferHandle(), 1024);
 	}
 }

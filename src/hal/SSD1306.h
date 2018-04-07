@@ -97,7 +97,13 @@ static inline void SSD1306_displayOn(void)
  */
 uint8_t *SSD1306_getDisplayBufferHandle(void);
 
+// Initialization
 void SSD1306_init(void);
-void SSD1306_writeDataBuffer(uint8_t *data, uint16_t dataLength);
+
+// Configuration
+
+// Runtime
+void SSD1306_drawDataBuffer(uint8_t *data, uint16_t dataLength);
+void SSD1306_drawPixel(uint8_t xCoord, uint8_t yCoord);
 
 #endif /* SSD1306_H_ */
