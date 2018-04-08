@@ -23,7 +23,8 @@
 #define SSD1306_CMD_SET_CONTRAST                        0x81    // Set Contrast 0x81
 #define SSD1306_CMD_SET_CONTRAST_VAL                    0xCF    // Set Contrast Value (0x00 - 0xFF)
 
-#define SSD1306_CMD_SEG_REMAP                           0xA1    // Seg-remap
+#define SSD1306_CMD_SEG_NO_REMAP                        0xA0    // Seg-remap
+#define SSD1306_CMD_SEG_REMAP                           0xA1
 
 #define SSD1306_CMD_COM_SCAN_DEC                        0xC8    // COM scan direction descending
 #define SSD1306_CMD_COM_SCAN_ASC                        0xC0    // COM scan direction ascending
@@ -103,6 +104,8 @@ void SSD1306_init(void);
 // Configuration
 
 // Runtime
+void SSD1306_clearDataBuffer(void);
+
 void SSD1306_drawDataBuffer(uint8_t *data, uint16_t dataLength);
 void SSD1306_drawPixel(uint8_t xCoord, uint8_t yCoord);
 
