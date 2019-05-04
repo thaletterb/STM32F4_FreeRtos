@@ -27,6 +27,9 @@
 // Hardware
 #include "SSD1306.h"
 
+// Libraries
+#include "Graphics.h"
+
 // Private Function Declarations
 static void STM32_initAllPeripherals(void);
 
@@ -61,7 +64,7 @@ int main(void)
 
 	STM32_initAllPeripherals();
 
-	//xTaskCreate(GreenLedThread, "Green LED Thread", 128, NULL, tskIDLE_PRIORITY + 1, NULL);
+	xTaskCreate(GreenLedThread, "Green LED Thread", 128, NULL, tskIDLE_PRIORITY + 1, NULL);
 	xTaskCreate(OrangeLedThread, "Orange LED Thread", 2048, NULL, tskIDLE_PRIORITY + 1, NULL);
 
 	// Start the scheduler
@@ -78,14 +81,20 @@ static void STM32_initAllPeripherals(void)
 
 	GPIO_initPeripheral();
 	errCode |= I2C_initPeripheral_defaults();
+
+	Graphics_Init();
 }
 
 static void GreenLedThread(void *arg)
 {
 	while(1)
 	{
-		vTaskDelay(250/portTICK_RATE_MS);
+		vTaskDelay(1500/portTICK_RATE_MS);
 		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+
+		SSD1306_clearDataBuffer();
+		Graphics_DrawString(16, 0, "BANANA PHONE");
+
 	}
 }
 
@@ -95,8 +104,9 @@ static void OrangeLedThread(void *arg)
 
 	while(1)
 	{
+	    vTaskDelay(pdMS_TO_TICKS(1000));
 		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
-		vTaskDelay(pdMS_TO_TICKS(1000));
+
 		SSD1306_drawDataBuffer(SSD1306_getDisplayBufferHandle(), 1024);
 	}
 }
